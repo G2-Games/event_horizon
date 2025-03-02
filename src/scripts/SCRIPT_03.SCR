@@ -1,0 +1,39 @@
+LABEL 'slimes'
+    TEXTBOX
+    IMG BG ".images/iss_landing.png"
+
+    DELAY 2
+
+    TEXTBOX SL "Thank you!"
+    TEXTBOX SL "We could tell you were friend!"
+
+    TEXTBOX N "You stand between the two slimes, allowing the less hostile looking one to escape."
+    
+    IMG CLEAR DSL
+
+    TEXTBOX N "The slime bounces away into the forest and you follow closely behind, not wanting to be left alone."
+    
+    IMG CLEAR SL
+
+    # Shot of the slimes' city
+    IMG BG "./images/slime_city"
+
+    TEXTBOX N "The slime leads you to a forest clearing, where you notice what appears to be some sort of slime village."
+    TEXTBOX N "Faint light pours out from the windows of mushroom-like homes, which blend in seamlessly with the surrounding fauna."
+    
+    TEXTBOX SL "This is home!"
+
+    # Non-choice 1.11
+    SELECT _
+        “What was going on back there?”
+        “What did you mean by saving your planet?”
+
+    TEXTBOX SL “Dark slimes live underground. They come out at night to terrorize us. It will only get worse.”
+    TEXTBOX SL “Our sun is about to be not alive! The light grows dim! Soon we all doomed!”
+
+    # Non-choice 1.12
+    SELECT _ 
+        “Can anything be done about that?”
+        “What can I do to help?”
+    
+
