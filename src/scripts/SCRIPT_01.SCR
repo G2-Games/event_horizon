@@ -1,0 +1,86 @@
+DEFINE  N   "Narrator"
+DEFINE VAL  "Valeria"
+DEFINE SL   "Slime"
+DEFINE DSL  "Dark Slime"
+DEFINE GRIF "Grift"
+DEFINE ELF  "LF-2001"
+DEFINE ELO  "High Elo"
+
+LABEL "introduction"
+    TEXTBOX N "1,964 days."
+    TEXTBOX N "It's been 1,964 days since I first boarded the International Space Station"
+    TEXTBOX N "The original mission was supposed to be one week. Two at the most."
+    TEXTBOX N "We were supposed to study the effects on staple crops in zero gravity. Wheat, rice, potatoes, corn…"
+    TEXTBOX N "Survival wasn’t part of the job description.
+
+    # Load first image and prepare
+    IMG BG "./images/iss_start.png"
+
+    TEXTBOX N "The last resupply was over a year ago. We were told a larger ship would be sent later to return us to Earth."
+    TEXTBOX N "Then again, they’d been saying that for years."
+    TEXTBOX N "We haven’t heard from anyone on the surface since then."
+
+    IMG BG "./images/inside-iss.png"
+
+    # Load Valeria's image here eventually
+    TEXTBOX VAL "You’re up early. Did you sleep at all last night? Or are you just that excited to start your shift?"
+
+    # Non-choice 0.01
+    SELECT _
+        "It’s been hard to sleep lately." " "
+        "I’m just eager to do something meaningful." " "
+
+    TEXTBOX VAL "Fair enough. It’s been difficult for me to think about anything else too."
+
+    TEXTBOX N "Valeria is the only other member of your crew, making her your only source of human contact up here."
+
+    TEXTBOX VAL "I know we were warned about Kessler syndrome, but I never thought it would actually happen."
+
+    # Load Earth scene
+    IMG BG "./images/earth-debris.png"
+
+    TEXTBOX
+
+    DELAY 2.0
+
+    TEXTBOX N "There was so much space debris around the Earth that it reached a critical point."
+    TEXTBOX N "One thing collided into another and we ended up with an impenetrable shield of trash…"
+    TEXTBOX N "…preventing anything, or anyone, from entering or leaving the atmosphere."
+
+    TEXTBOX N "I guess that’s what we get from launching so many starchain satellites."
+
+    # Return to inside of ISS
+    IMG BG "./images/inside-iss.png"
+
+    TEXTBOX VAL "I just can’t stop thinking about everyone back on Earth. Do you think they’re ok?"
+
+    # Non-choice 0.02
+    SELECT _
+        "I’m sure they’re probably fine." " "
+        "Everyone is dead." " "
+
+    TEXTBOX N "I’ve been worrying about my family a lot too."
+    TEXTBOX N "I think we have bigger problems to worry about."
+
+    TEXTBOX VAL "Well, without a resupply soon, we might not have anything left to worry about."
+    TEXTBOX VAL "Rations are running low, but somehow that isn’t the worst of our problems…"
+    TEXTBOX VAL "We’re almost out of fuel."
+
+    TEXTBOX N "Each refuel mission only provides the station with enough propellant to remain in orbit for another year."
+    TEXTBOX N "Without fuel, the ISS will fall out of the sky in a matter of days."
+
+    TEXTBOX VAL "You know, I was thinking…Are we really just gonna sit up here and wait to die?"
+    TEXTBOX VAL "I did the calculations. We have enough propellant left for one last boost."
+    TEXTBOX VAL "I think we might as well make it count."
+    TEXTBOX VAL "What do you say?"
+
+    ## ACTUAL CHOICE 1
+    # Results are "Boost" for path 1, or "Escape" for path 2
+    SELECT Choice1
+        "We should boost out of orbit and try to find a new world to live on." "Boost"
+        "We should divert the fuel to our escape pods and launch ourselves to the surface of Earth." "Escape"
+
+    TEXTBOX VAL "Not a bad idea. Well, better than rotting up here at least. Let’s go for it."
+
+
+

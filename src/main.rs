@@ -2,7 +2,7 @@
 
 mod script;
 
-use std::{cell::LazyCell, path::Path};
+use std::{cell::LazyCell, path::Path, time::{Duration, Instant}};
 
 use macroquad::prelude::*;
 use script::Script;
@@ -82,6 +82,8 @@ struct NovelState {
     textbox: Option<TextBox>,
 
     select_menu: Option<SelectMenu>,
+
+    delay: Option<(Instant, Duration)>,
 }
 
 #[derive(Default)]
@@ -112,7 +114,7 @@ async fn main() {
         .filter_level(log::LevelFilter::Debug)
         .init();
 
-    let mut script = Script::load_script("./scripts/SCRIPT01.SCR");
+    let mut script = Script::load_script("./scripts/SCRIPT_01.SCR");
 
     // Set the state
     let mut state = NovelState::default();
@@ -127,7 +129,7 @@ async fn main() {
         font: Some(&character_text),
         font_size: (36.0 / scale) as u16,
         font_scale: 0.9,
-        font_scale_aspect: 0.9,
+        font_scale_aspect: 1.0,
         ..Default::default()
     };
 
@@ -136,7 +138,7 @@ async fn main() {
         font: Some(&character_name),
         font_size: (36.0 / scale) as u16,
         font_scale: 0.9,
-        font_scale_aspect: 0.9,
+        font_scale_aspect: 1.0,
         ..Default::default()
     };
 
@@ -167,8 +169,10 @@ async fn main() {
                 state.select_menu = None;
                 script.next_instruction(&mut state);
             }
-        } else if is_key_pressed(KeyCode::Enter) {
-            // Non-option control mode... very simple!
+        } else if is_key_pressed(KeyCode::Enter) { // Non-option control mode... very simple!
+            // Reset any delays
+            state.delay = None;
+
             script.next_instruction(&mut state);
         }
 
@@ -218,9 +222,11 @@ async fn main() {
                 }
 
                 let mut text = character_text.clone();
+                text.font_size = (36.0 / scale) as u16;
+                text.font_scale_aspect = 0.9;
                 text.color = BLACK;
 
-                draw_text_ex(&option.0, 275. / scale, (172. + vert) / scale, text);
+                draw_text_ex(&option.0.replace('\n', " "), 275. / scale, (172. + vert) / scale, text);
 
                 vert += 163.;
             }
@@ -270,6 +276,13 @@ async fn main() {
                     textbox.current_char += 1;
                 }
                 shift += 56.;
+            }
+        }
+
+        if let Some(d) = &state.delay {
+            if d.0.elapsed() >= d.1 {
+                state.delay = None;
+                script.next_instruction(&mut state);
             }
         }
 

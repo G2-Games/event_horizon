@@ -1,6 +1,6 @@
 use log::debug;
 use macroquad::math::Vec2;
-use std::{collections::HashMap, fmt::Display, fs, iter::Peekable, path::{Path, PathBuf}, str::Chars};
+use std::{collections::HashMap, fmt::Display, fs, iter::Peekable, path::{Path, PathBuf}, str::Chars, time::{Duration, Instant}};
 
 use crate::{load_image, CharacterSprite, NovelState, SelectMenu, TextBox};
 
@@ -13,18 +13,18 @@ const TEXTBOX: &str = "TEXTBOX";
 const JUMP: &str = "JUMP";
 const IF: &str = "IF";
 const LOAD: &str = "LOAD";
+const DELAY: &str = "DELAY";
 
 #[derive(Debug)]
-pub struct Script<P: AsRef<Path>> {
-    path: P,
+pub struct Script {
     variable_map: HashMap<String, String>,
     jump_map: HashMap<String, (usize, PathBuf)>,
     lines: Vec<String>,
     index: usize,
 }
 
-impl<P: AsRef<Path>> Script<P> {
-    pub fn load_script(path: P) -> Script<P> {
+impl Script {
+    pub fn load_script<P: AsRef<Path>>(path: P) -> Script {
         let path_ref = path.as_ref();
         let script_txt = fs::read_to_string(path_ref).unwrap();
 
@@ -33,7 +33,6 @@ impl<P: AsRef<Path>> Script<P> {
         let lines = script_txt.lines().map(|s| s.to_string()).collect();
 
         Script {
-            path,
             variable_map: HashMap::new(),
             jump_map,
             lines,
@@ -93,6 +92,15 @@ impl<P: AsRef<Path>> Script<P> {
                         line.tokens[1].to_string(),
                         line.tokens[2].load_self_map(&self.variable_map).unwrap(),
                     );
+                }
+                DELAY => {
+                    let delay = line.tokens[1].to_f32().unwrap();
+                    let dur = Duration::from_secs_f32(delay);
+                    let future = Instant::now();
+
+                    state.delay = Some((future, dur));
+
+                    return;
                 }
                 SELECT => {
                     let mut options = Vec::new();
@@ -238,6 +246,10 @@ impl Token {
             Token::Expression(e) => var_map.get(e).cloned(),
         }
     }
+
+    fn to_f32(&self) -> Option<f32> {
+        self.to_string().parse::<f32>().ok()
+    }
 }
 
 impl Display for Token {
@@ -259,7 +271,7 @@ struct ScriptLine {
 fn read_tokens(line: &str) -> ScriptLine {
     let mut tokens = Vec::new();
 
-    let line = line.replace('’', "\'");
+    let line = line.replace('’', "\'").replace('…', "...");
 
     let mut char_indices = line.chars().peekable();
     let mut indent = 0;
