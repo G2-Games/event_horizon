@@ -1,3 +1,5 @@
+#![windows_subsystem = "windows"]
+
 mod script;
 
 use std::{cell::LazyCell, path::Path};
@@ -65,7 +67,7 @@ fn window_conf() -> Conf {
         window_width: WINDOW_WIDTH,
         window_height: WINDOW_HEIGHT,
         window_resizable: false,
-        high_dpi: true,
+        high_dpi: false,
 
         ..Default::default()
     }
@@ -91,6 +93,7 @@ struct TextBox {
 }
 
 struct CharacterSprite {
+    name: String,
     texture: Texture2D,
     position: Vec2,
     saturation: f32,
@@ -122,7 +125,7 @@ async fn main() {
     let character_text = load_ttf_font_from_bytes(CHARACTER_TEXT).unwrap();
     let character_text = TextParams {
         font: Some(&character_text),
-        font_size: 26,
+        font_size: (36.0 / scale) as u16,
         font_scale: 0.9,
         font_scale_aspect: 0.9,
         ..Default::default()
@@ -131,8 +134,8 @@ async fn main() {
     let character_name = load_ttf_font_from_bytes(CHARACTER_NAME).unwrap();
     let character_name = TextParams {
         font: Some(&character_name),
-        font_size: 26,
-        font_scale: 0.8,
+        font_size: (36.0 / scale) as u16,
+        font_scale: 0.9,
         font_scale_aspect: 0.9,
         ..Default::default()
     };
@@ -172,7 +175,7 @@ async fn main() {
         // Draw background
         if let Some(b) = &state.background {
             draw_texture_ex(b, 0., 0., WHITE, DrawTextureParams {
-                dest_size: Some(Vec2 { x: WINDOW_WIDTH as f32 / scale, y: WINDOW_HEIGHT as f32 / scale }),
+                dest_size: Some(Vec2::new(WINDOW_WIDTH as f32 / scale, WINDOW_HEIGHT as f32 / scale)),
                 ..Default::default()
             });
         }
@@ -201,14 +204,14 @@ async fn main() {
                 if o.selected == i {
                     draw_texture_ex(&SELECTION_BOX_ACTIVE, 171. / scale, (100. + vert) / scale, WHITE,
                         DrawTextureParams {
-                            dest_size: Some(Vec2 { x: SELECTION_BOX_ACTIVE.width() as f32 / scale, y: SELECTION_BOX_ACTIVE.height() as f32 / scale }),
+                            dest_size: Some(Vec2::new(SELECTION_BOX_ACTIVE.width() as f32 / scale, SELECTION_BOX_ACTIVE.height() as f32 / scale)),
                             ..Default::default()
                         }
                     );
                 } else {
                     draw_texture_ex(&SELECTION_BOX, 171. / scale, (100. + vert) / scale, WHITE,
                         DrawTextureParams {
-                            dest_size: Some(Vec2 { x: SELECTION_BOX.width() as f32 / scale, y: SELECTION_BOX.height() as f32 / scale }),
+                            dest_size: Some(Vec2::new(SELECTION_BOX.width() as f32 / scale,SELECTION_BOX.height() as f32 / scale)),
                             ..Default::default()
                         }
                     );

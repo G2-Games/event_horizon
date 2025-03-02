@@ -12,6 +12,7 @@ const IMAGE: &str = "IMG";
 const TEXTBOX: &str = "TEXTBOX";
 const JUMP: &str = "JUMP";
 const IF: &str = "IF";
+const LOAD: &str = "LOAD";
 
 #[derive(Debug)]
 pub struct Script<P: AsRef<Path>> {
@@ -38,6 +39,18 @@ impl<P: AsRef<Path>> Script<P> {
             lines,
             index: 0,
         }
+    }
+
+    /// Load a new script and append it to the end of the current one in memory
+    pub fn load_into(&mut self, path: &Path) {
+        let script_txt = fs::read_to_string(path).unwrap();
+
+        let jump_map = pre_parse(&script_txt, path);
+
+        let lines: Vec<String> = script_txt.lines().map(|s| s.to_string()).collect();
+
+        self.lines.extend_from_slice(&lines);
+        self.jump_map.extend(jump_map);
     }
 
     pub fn insert_variable(&mut self, var_name: String, value: String) {
@@ -121,16 +134,17 @@ impl<P: AsRef<Path>> Script<P> {
                     }
                 }
                 IMAGE => {
-                    let path = line.tokens[2].clone();
+                    let path = line.tokens[2].load_self_map(&self.variable_map).unwrap();
                     match line.tokens[1].to_string().as_str() {
                         "BG" => {
-                            debug!("IMG BG: {:>8}", path.to_string());
+                            debug!("IMG BG: {:>8}", line.tokens[2].clone());
                             state.background = load_image(&path.to_string());
                         }
                         "CHAR" => {
                             debug!("IMG CHAR: {:>8}", path.to_string());
 
                             state.characters.push(CharacterSprite {
+                                name: path.to_string(),
                                 texture: load_image(&path.to_string()).unwrap(),
                                 position: Vec2::new(700., 100.),
                                 saturation: 1.0,
@@ -141,12 +155,18 @@ impl<P: AsRef<Path>> Script<P> {
                             debug!("IMG CHAR2: {:>8}", path.to_string());
 
                             state.characters.push(CharacterSprite {
+                                name: path.to_string(),
                                 texture: load_image(&path.to_string()).unwrap(),
                                 position: Vec2::new(200., 100.),
                                 saturation: 1.0,
                                 flip: true,
                             });
                         },
+                        "CLEAR" => {
+                            if let Some(pos) = state.characters.iter().position(|c| c.name == path.to_string()) {
+                                state.characters.remove(pos);
+                            }
+                        }
                         _ => panic!("Invalid option"),
                     }
                 }
@@ -166,12 +186,19 @@ impl<P: AsRef<Path>> Script<P> {
                         current_char: 0,
                     });
 
-                    return
+                    if !line.tokens.get(3).is_some_and(|t| t.to_string().as_str() == "SELECT") {
+                        return
+                    }
                 }
                 JUMP => {
                     debug!("JUMP: {}", line.tokens[1]);
                     let label_point = line.tokens[1].to_string();
                     self.index = self.jump_map.get(&label_point).unwrap().0 - 1;
+                }
+                LOAD => {
+                    let path = line.tokens[1].to_string();
+                    debug!("LOAD: {}", path);
+                    self.load_into(&PathBuf::from(path));
                 }
                 LABEL => (),
                 _ => (),

@@ -1,0 +1,9 @@
+DEFINE C1 "Evil Mio"
+
+LABEL "start"
+    IMG CLEAR "BG002.png"
+
+    TEXTBOX C1 "New file test!"
+    TEXTBOX C2 "Wow this is cool, it even keeps variables!"
+    TEXTBOX C1 "But I've been redefined..."
+    TEXTBOX C2 ":P\""

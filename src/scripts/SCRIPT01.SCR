@@ -18,23 +18,22 @@ LABEL "start"
     # input to advance.
     TEXTBOX C2 "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA This is a really long line that should get split up automagically by my stuff"
     TEXTBOX C1 "This is another test"
-    TEXTBOX N "The planet orbits a small red dwarf as its star. The cold light from the star barely illuminates the planet’s surface"
+    TEXTBOX N "The planet orbits a small red dwarf as its star. The cold light from the star barely illuminates the surface below."
 
-    TEXTBOX
+    TEXTBOX N "Do you take the ice cream?" SELECT
 
     # Select shows an option for the user. The variable VarName is set to one
     # of the values (eg. "opt1"). The user is shown the first text (eg. "Option 1")
     SELECT VarName
-        "Option 1" "opt1"
-        "Option 2" "opt2"
+        "Take it" "opt1"
+        "Do not take it" "opt2"
+
+    IMG CLEAR "SLIME001.png"
 
     # IF expresssions are used to conditionally execute other expressions
     # (obviously!)
     IF VarName "opt1"
         JUMP "second"
-
-    if VarName "opt2"
-        TEXTBOX C2 "Wowahhaa!"
 
     # Yep
     TEXTBOX C1 "I'm gonna die"
@@ -56,4 +55,4 @@ LABEL "third"
     TEXTBOX C1 ":D"
     TEXTBOX C2 "Also..."
 
-JUMPSCRIPT "SCRIPT02.SCR"
+LOAD "./scripts/SCRIPT02.SCR"
