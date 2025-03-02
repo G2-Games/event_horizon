@@ -1,0 +1,45 @@
+# This is a comment! Any line starting with # is a comment.
+
+# Variables are defined by DEFINE
+DEFINE  N "Narrator"
+DEFINE C1 "Character 1"
+DEFINE C2 "Character 2"
+
+# Labels must wrap the section of the script you
+LABEL "start"
+    # IMG commands are used for updating the background, updating individual
+    # character sprites, and anything else that requires images.
+    IMG BG "BG001.png"
+    IMG CHAR "MIO001.png"
+
+    # Text boxes are the basic method of displaying anything in a VN. Each time
+    # a text box is shown, it types the text out on the screen and awaits user
+    # input to advance.
+    TEXTBOX C1 "This is a test"
+    TEXTBOX C2 "This is another test"
+    TEXTBOX C1 "Woahh"
+
+    # Select shows an option for the user. The variable VarName is set to one
+    # of the values (eg. "opt1"). The user is shown the first text (eg. "Option 1")
+    SELECT VarName
+        "Option 1" "opt1"
+        "Option 2" "opt2"
+        "Option 3" "opt3"
+
+    # IF expresssions are used to conditionally execute other expressions
+    # (obviously!)
+    IF VarName = "opt1"
+        JUMP second
+    ELIF VarName = "opt2"
+        JUMP second
+    ELSE
+        NONE
+
+    # Yep
+    TEXTBOX C1 "I'm gonna die"
+
+LABEL "second"
+    TEXTBOX C1 "Section 2 test"
+    TEXTBOX C2 "Woahahhh pipe bomb"
+    TEXTBOX C1 "So cool!"
+    TEXTBOX C2 "I wonder what happens if I--"
