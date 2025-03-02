@@ -11,7 +11,7 @@ const WINDOW_WIDTH: i32 = 1280;
 const WINDOW_HEIGHT: i32 = 720;
 
 const TEXTBOX: LazyCell<Texture2D> = LazyCell::new(|| {
-    let image = image::load_from_memory(include_bytes!("../assets/textbox.png"))
+    let image = image::load_from_memory(include_bytes!("./assets/textbox.png"))
         .unwrap()
         .to_rgba8();
 
@@ -23,7 +23,7 @@ const TEXTBOX: LazyCell<Texture2D> = LazyCell::new(|| {
 });
 
 const CHARBOX: LazyCell<Texture2D> = LazyCell::new(|| {
-    let image = image::load_from_memory(include_bytes!("../assets/characterbox.png"))
+    let image = image::load_from_memory(include_bytes!("./assets/characterbox.png"))
         .unwrap()
         .to_rgba8();
 
@@ -35,7 +35,7 @@ const CHARBOX: LazyCell<Texture2D> = LazyCell::new(|| {
 });
 
 const SELECTION_BOX: LazyCell<Texture2D> = LazyCell::new(|| {
-    let image = image::load_from_memory(include_bytes!("../assets/selectionbox.png"))
+    let image = image::load_from_memory(include_bytes!("./assets/selectionbox.png"))
         .unwrap()
         .to_rgba8();
 
@@ -47,7 +47,7 @@ const SELECTION_BOX: LazyCell<Texture2D> = LazyCell::new(|| {
 });
 
 const SELECTION_BOX_ACTIVE: LazyCell<Texture2D> = LazyCell::new(|| {
-    let image = image::load_from_memory(include_bytes!("../assets/selectionbox-active.png"))
+    let image = image::load_from_memory(include_bytes!("./assets/selectionbox-active.png"))
         .unwrap()
         .to_rgba8();
 
@@ -58,8 +58,8 @@ const SELECTION_BOX_ACTIVE: LazyCell<Texture2D> = LazyCell::new(|| {
     )
 });
 
-const CHARACTER_TEXT: &[u8] = include_bytes!("../assets/Monaspace-Krypton_Medium.ttf");
-const CHARACTER_NAME: &[u8] = include_bytes!("../assets/Monaspace-Krypton_Bold.ttf");
+const CHARACTER_TEXT: &[u8] = include_bytes!("./assets/Monaspace-Krypton_Medium.ttf");
+const CHARACTER_NAME: &[u8] = include_bytes!("./assets/Monaspace-Krypton_Bold.ttf");
 
 fn window_conf() -> Conf {
     Conf {
