@@ -102,6 +102,7 @@ LABEL "test"
         LOAD "./scripts/SCRIPT_03.SCR"
 
     IF Choice2 "DarkSlimes"
-        LOAD "./scripts/SCRIPT_04.SCR"
+        IMAGE BG "./images/space_black.png"
+        TEXTBOX DSL "This route has not been finished"
 
 

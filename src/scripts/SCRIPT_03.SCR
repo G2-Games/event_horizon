@@ -1,6 +1,6 @@
 LABEL 'slimes'
     TEXTBOX
-    IMG BG ".images/iss_landing.png"
+    IMG BG "./images/iss_landing.png"
 
     DELAY 2
 
@@ -12,11 +12,11 @@ LABEL 'slimes'
     IMG CLEAR DSL
 
     TEXTBOX N "The slime bounces away into the forest and you follow closely behind, not wanting to be left alone."
-    
-    IMG CLEAR SL
+
+    IMG CLEAR "./images/darkslime.png"
 
     # Shot of the slimes' city
-    IMG BG "./images/slime_city"
+    IMG BG "./images/slime_city.png"
 
     TEXTBOX N "The slime leads you to a forest clearing, where you notice what appears to be some sort of slime village."
     TEXTBOX N "Faint light pours out from the windows of mushroom-like homes, which blend in seamlessly with the surrounding fauna."
@@ -25,15 +25,83 @@ LABEL 'slimes'
 
     # Non-choice 1.11
     SELECT _
-        “What was going on back there?”
-        “What did you mean by saving your planet?”
+        "What was going on back there?" " "
+        "What did you mean by saving your planet?" " "
 
-    TEXTBOX SL “Dark slimes live underground. They come out at night to terrorize us. It will only get worse.”
-    TEXTBOX SL “Our sun is about to be not alive! The light grows dim! Soon we all doomed!”
+    TEXTBOX SL "Dark slimes live underground. They come out at night to terrorize us. It will only get worse."
+    TEXTBOX SL "Our sun is about to be not alive! The light grows dim! Soon we all doomed!"
 
     # Non-choice 1.12
     SELECT _ 
-        “Can anything be done about that?”
-        “What can I do to help?”
-    
+        "Can anything be done about that?" " "
+        "What can I do to help?" " "
+
+    TEXTBOX SL "The High Elo will save us! He is our leader and savior!"
+    TEXTBOX SL "He having us build a ship to save us!"
+    TEXTBOX SL "We work 12 hour days, but can leave our planet before it go dark!"
+    TEXTBOX SL "He really care about us!"
+    TEXTBOX SL "Would you like to meet him?"
+
+    # Non-Choice 1.13
+    SELECT _
+        "Sure!" " "
+        "Only if meeting him means I can steal that ship and leave…" " "
+
+    TEXTBOX SL "Great, let’s goooo!"
+
+    # Shot of slime government corridor
+    IMG BG "./images/inside_corridor.png"
+
+    TEXTBOX N "The slime leads you to a large building deeper in the woods."
+    TEXTBOX N "This building is much more complex than any you saw in the village…it almost looks like a castle."
+    TEXTBOX N "The interior is full of winding plants, snaking in through the broken windows."
+    TEXTBOX N "It looks like this building doesn’t get used much."
+
+    TEXTBOX SL "This is where High Elo lives. He is very wise and always tells us what to do! Maybe he can help you too!"
+
+    TEXTBOX N "You somehow doubt that their ruler will be much more helpful than they are. But, you don’t have any other options."
+
+    SELECT _
+        "How did High Elo become your leader?" " "
+        "Why do you all seem so dependent on this guy?" " "
+
+    TEXTBOX SL "The High Elo came to planet not long ago. He promised to protect us from the dark slimes."
+    TEXTBOX SL "In exchange, he uses power from sun and we work hard to help build stuff!"
+    TEXTBOX SL "Now, he will help us find new planet! One even better!!!"
+
+    SELECT _
+        "He sounds pretty great!" " "
+        "That just sounds like exploitation." " "
+
+    TEXTBOX SL "Come on! You gotta meet him!"
+
+    TEXTBOX N "The slime leads you down the corridor to a large wooden door."
+    TEXTBOX N "You push the door open to find a spacious throne room on the other side, occupied by a single figure."
+
+    IMG BG "./images/throne-room.png"
+    IMG CLEAR "./images/slime1.png"
+    IMG CHAR "./images/high_elo.png"
+
+    TEXTBOX ELO "Well, well, well. What do we have here?"
+    TEXTBOX ELO "An Earthling? How amusing. And here I thought I had already dealt with your kind."
+    TEXTBOX ELO "It’s too late anyway. This planet is old news. It’s time for me to move on to the next one."
+
+    TEXTBOX N "The High Elo walked to one end of the throne room, towards a door you hadn’t noticed at first."
+    TEXTBOX N "Through the door, you can see a large rocket sitting on a launchpad in the distance."
+    TEXTBOX N "The lights on the launchpad start flashing."
+
+    TEXTBOX ELO "It’s like I’ve always said: you gotta drop some thermonuclear weapons to make an omelet."
+    TEXTBOX ELO "TLDR: I got profits to make."
+    TEXTBOX ELO "But I wouldn’t expect a lesser lifeform to understand. You’re not a real gamer like me."
+
+    # END 1.1
+
+    IMG BG "./images/space_black.png"
+    IMG CLEAR "./images/high_elo.png"
+
+    TEXTBOX N "You watch with dismay as the High Elo approaches the rocket in the distance. Leaving both you and the slime behind."
+    TEXTBOX N "You are left to die along with the slimes when their sun goes dark."
+    TEXTBOX N "You can’t help but wonder if there was something that could have been done to prevent this."
+
+    TEXTBOX N "THE END"
 

@@ -88,7 +88,8 @@ LABEL "introduction"
         LOAD "./scripts/SCRIPT_02.SCR"
 
     IF Choice1 "Escape"
-        LOAD "./scripts/SCRIPT_03.SCR"
+        IMAGE BG "./images/space_black.png"
+        TEXTBOX DSL "This route has not been finished"
 
 
 
