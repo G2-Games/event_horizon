@@ -75,7 +75,8 @@ fn window_conf() -> Conf {
 
 #[derive(Default)]
 struct NovelState {
-    background: Option<Texture2D>,
+    background: Option<(Texture2D, Instant, bool)>,
+    background_old: Option<Texture2D>,
 
     characters: Vec<CharacterSprite>,
 
@@ -172,13 +173,34 @@ async fn main() {
         } else if is_key_pressed(KeyCode::Enter) { // Non-option control mode... very simple!
             // Reset any delays
             state.delay = None;
+            if let Some(b) = state.background.as_mut() {
+                b.2 = true;
+            }
 
             script.next_instruction(&mut state);
         }
 
         // Draw background
-        if let Some(b) = &state.background {
-            draw_texture_ex(b, 0., 0., WHITE, DrawTextureParams {
+        if let Some(b) = state.background.as_mut() {
+            let mut fade = (b.1.elapsed().as_secs_f32() / 2.0).clamp(0.0, 1.0);
+            if b.2 {
+                b.1 -= Duration::from_secs(10);
+                fade = 1.0;
+                b.2 = false;
+            }
+
+            if fade != 1.0 {
+                if let Some(b) = &state.background_old {
+                    draw_texture_ex(&b, 0., 0., Color::new(1.0, 1.0, 1.0, 1.0 - fade), DrawTextureParams {
+                        dest_size: Some(Vec2::new(WINDOW_WIDTH as f32 / scale, WINDOW_HEIGHT as f32 / scale)),
+                        ..Default::default()
+                    });
+                }
+            } else {
+                state.background_old = Some(b.0.clone());
+            }
+
+            draw_texture_ex(&b.0, 0., 0., Color::new(1.0, 1.0, 1.0, fade), DrawTextureParams {
                 dest_size: Some(Vec2::new(WINDOW_WIDTH as f32 / scale, WINDOW_HEIGHT as f32 / scale)),
                 ..Default::default()
             });

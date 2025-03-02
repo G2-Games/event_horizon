@@ -11,17 +11,17 @@ LABEL "drift"
 
     # Drift away!
     IMG BG "./images/earth_drift1.png"
-    DELAY 2
+    DELAY 2.5
     IMG BG "./images/earth_drift2.png"
-    DELAY 2
+    DELAY 2.5
     IMG BG "./images/earth_drift3.png"
     TEXTBOX N "You watch as the moon flies past and the Earth disappears into the distance." SELECT
 
-    DELAY 2
+    DELAY 2.5
     IMG BG "./images/earth_drift4.png"
     DELAY 3
 
-    IMG BG "./images/earth_drift5.png"
+    IMG BG "./images/space_black.png"
 
     DELAY 1
 
@@ -32,6 +32,8 @@ LABEL "drift"
 
     TEXTBOX N "Some time passes. You look out the window and find you are approaching a new planet."
     TEXTBOX N "The planet orbits a small red dwarf as its star. The cold light from the star barely illuminates the surface below."
+
+LABEL "test"
     TEXTBOX N "It reminds you of a candle illuminating a cold winter room, of a faint ember of hope still burning."
     TEXTBOX N "It reminds you of all those nights you spent alone on Earth, before you volunteered to join the astronaut corps."
     TEXTBOX N "You still miss her."

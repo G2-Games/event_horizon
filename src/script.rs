@@ -148,7 +148,7 @@ impl Script {
                     match line.tokens[1].to_string().as_str() {
                         "BG" => {
                             debug!("IMG BG: {:>8}", line.tokens[2].clone());
-                            state.background = load_image(&path.to_string());
+                            state.background = Some((load_image(&path.to_string()).unwrap(), Instant::now(), false));
                         }
                         "CHAR" => {
                             debug!("IMG CHAR: {:>8}", path.to_string());
