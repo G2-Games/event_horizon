@@ -2,8 +2,8 @@
 
 # Variables are defined by DEFINE
 DEFINE  N "Narrator"
-DEFINE C1 "Character 1"
-DEFINE C2 "Character 2"
+DEFINE C1 "Dark Slime"
+DEFINE C2 "Mio"
 
 # Labels must wrap the section of the script you
 LABEL "start"
@@ -11,25 +11,30 @@ LABEL "start"
     # character sprites, and anything else that requires images.
     IMG BG "BG001.png"
     IMG CHAR "MIO001.png"
+    IMG CHAR2 "SLIME001.png"
 
     # Text boxes are the basic method of displaying anything in a VN. Each time
     # a text box is shown, it types the text out on the screen and awaits user
     # input to advance.
-    TEXTBOX C1 "The last resupply was over a year ago. We were told a larger ship would be sent later to return us to Earth."
-    TEXTBOX C2 "This is another test"
-    TEXTBOX C1 "Woahh"
+    TEXTBOX C2 "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA This is a really long line that should get split up automagically by my stuff"
+    TEXTBOX C1 "This is another test"
+    TEXTBOX N "The planet orbits a small red dwarf as its star. The cold light from the star barely illuminates the planet’s surface"
+
+    TEXTBOX
 
     # Select shows an option for the user. The variable VarName is set to one
     # of the values (eg. "opt1"). The user is shown the first text (eg. "Option 1")
     SELECT VarName
         "Option 1" "opt1"
         "Option 2" "opt2"
-        "Option 3" "opt3"
 
     # IF expresssions are used to conditionally execute other expressions
     # (obviously!)
     IF VarName "opt1"
         JUMP "second"
+
+    if VarName "opt2"
+        TEXTBOX C2 "Wowahhaa!"
 
     # Yep
     TEXTBOX C1 "I'm gonna die"

@@ -1,9 +1,8 @@
 use log::debug;
-use std::{collections::HashMap, fmt::Display, fs, iter::{Enumerate, Peekable}, path::{Path, PathBuf}, str::{Chars, Lines}};
+use macroquad::math::Vec2;
+use std::{collections::HashMap, fmt::Display, fs, iter::Peekable, path::{Path, PathBuf}, str::Chars};
 
-use macroquad::prelude::*;
-
-use crate::{load_image, NovelState, TextBox};
+use crate::{load_image, CharacterSprite, NovelState, SelectMenu, TextBox};
 
 const COMMENT: &str = "#";
 const DEFINE: &str = "DEFINE";
@@ -41,8 +40,16 @@ impl<P: AsRef<Path>> Script<P> {
         }
     }
 
+    pub fn insert_variable(&mut self, var_name: String, value: String) {
+        self.variable_map.insert(var_name, value);
+    }
+
     pub fn next_instruction(&mut self, state: &mut NovelState) {
         loop {
+            if self.index == self.lines.len() {
+                break;
+            }
+
             let line = self.lines[self.index].clone();
             self.index += 1;
 
@@ -75,21 +82,27 @@ impl<P: AsRef<Path>> Script<P> {
                     );
                 }
                 SELECT => {
-                    let new_var = line.tokens[1].to_string().clone();
-                    let mut options = HashMap::new();
+                    let mut options = Vec::new();
                     loop {
                         let newline = read_tokens(&self.lines[self.index]);
                         if newline.indent <= line.indent {
                             break;
                         }
 
-                        options.insert(newline.tokens[0].to_string(), newline.tokens[1].to_string());
+                        options.push((newline.tokens[0].to_string(), newline.tokens[1].to_string()));
 
                         self.index += 1;
                     }
 
-                    self.variable_map.insert(new_var, "BLOOP".to_string());
-                    debug!("{}: {:#?}", SELECT, options);
+                    debug!("{}: {:?}", SELECT, options);
+
+                    state.select_menu = Some(SelectMenu {
+                        selected: 0,
+                        variable: line.tokens[1].to_string().clone(),
+                        options,
+                    });
+
+                    return
                 }
                 IF => {
                     let condition_1 = line.tokens[1].load_self_map(&self.variable_map);
@@ -113,19 +126,46 @@ impl<P: AsRef<Path>> Script<P> {
                         "BG" => {
                             debug!("IMG BG: {:>8}", path.to_string());
                             state.background = load_image(&path.to_string());
+                        }
+                        "CHAR" => {
+                            debug!("IMG CHAR: {:>8}", path.to_string());
+
+                            state.characters.push(CharacterSprite {
+                                texture: load_image(&path.to_string()).unwrap(),
+                                position: Vec2::new(700., 100.),
+                                saturation: 1.0,
+                                flip: false,
+                            });
+                        }
+                        "CHAR2" => {
+                            debug!("IMG CHAR2: {:>8}", path.to_string());
+
+                            state.characters.push(CharacterSprite {
+                                texture: load_image(&path.to_string()).unwrap(),
+                                position: Vec2::new(200., 100.),
+                                saturation: 1.0,
+                                flip: true,
+                            });
                         },
-                        "CHAR" => debug!("IMG CHAR: {:>8}", path.to_string()),
-                        _ => panic!(),
+                        _ => panic!("Invalid option"),
                     }
                 }
                 TEXTBOX => {
+                    if line.tokens.len() == 1 {
+                        state.textbox = None;
+                        continue;
+                    }
+
                     let character_name = line.tokens[1].load_self_map(&self.variable_map).unwrap();
                     debug!("TEXTBOX: {}, \"{}\"", character_name, line.tokens[2]);
 
                     state.textbox = Some(TextBox {
                         name: character_name,
                         dialogue: line.tokens[2].to_string().clone().lines().map(|l| l.to_string()).collect(),
+                        current_line: 0,
+                        current_char: 0,
                     });
+
                     return
                 }
                 JUMP => {
@@ -192,6 +232,8 @@ struct ScriptLine {
 fn read_tokens(line: &str) -> ScriptLine {
     let mut tokens = Vec::new();
 
+    let line = line.replace('’', "\'");
+
     let mut char_indices = line.chars().peekable();
     let mut indent = 0;
     let mut encountered_non_empty = false;
@@ -240,8 +282,11 @@ fn read_string(line: &mut Peekable<Chars>) -> Option<String> {
             space_index = index
         }
 
-        if index - last_index == 39 {
-            final_string.replace_range(space_index - 1..space_index, "\n");
+        if index - last_index == 39 && space_index != 0 {
+            //dbg!(space_index, final_string.len(), &final_string, &final_string[space_index - 1..space_index]);
+            if final_string.is_char_boundary(space_index - 1) {
+                final_string.replace_range(space_index - 1..space_index, "\n");
+            }
             last_index = index
         }
 
