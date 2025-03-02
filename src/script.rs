@@ -98,6 +98,8 @@ impl Script {
                     let dur = Duration::from_secs_f32(delay);
                     let future = Instant::now();
 
+                    debug!("DELAY: {:?}", dur);
+
                     state.delay = Some((future, dur));
 
                     return;

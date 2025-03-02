@@ -41,7 +41,8 @@ LABEL "introduction"
 
     TEXTBOX
 
-    DELAY 2.0
+    # Wait for 2 seconds, for dramatic effect!
+    DELAY 2
 
     TEXTBOX N "There was so much space debris around the Earth that it reached a critical point."
     TEXTBOX N "One thing collided into another and we ended up with an impenetrable shield of trash…"
@@ -81,6 +82,13 @@ LABEL "introduction"
         "We should divert the fuel to our escape pods and launch ourselves to the surface of Earth." "Escape"
 
     TEXTBOX VAL "Not a bad idea. Well, better than rotting up here at least. Let’s go for it."
+
+    # Skip to another script file based on the choice!
+    IF Choice1 "Boost"
+        LOAD "./scripts/SCRIPT_02.SCR"
+
+    IF Choice1 "Escape"
+        LOAD "./scripts/SCRIPT_03.SCR"
 
 
 

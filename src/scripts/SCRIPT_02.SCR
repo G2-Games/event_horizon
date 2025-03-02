@@ -1,0 +1,105 @@
+LABEL "drift"
+    TEXTBOX
+    IMG BG "./images/iss_start.png"
+
+    DELAY 2
+
+    TEXTBOX N "You point the station away from the Earth and its Iron Wall, flipping the thruster switch forward."
+    TEXTBOX N "With a jolt, you feel the ship begin to move."
+
+    TEXTBOX
+
+    # Drift away!
+    IMG BG "./images/earth_drift1.png"
+    DELAY 2
+    IMG BG "./images/earth_drift2.png"
+    DELAY 2
+    IMG BG "./images/earth_drift3.png"
+    TEXTBOX N "You watch as the moon flies past and the Earth disappears into the distance." SELECT
+
+    DELAY 2
+    IMG BG "./images/earth_drift4.png"
+    DELAY 3
+
+    IMG BG "./images/earth_drift5.png"
+
+    DELAY 1
+
+    TEXTBOX N "Soon you are lost in space."
+
+    # Shot of ISS approaching alien planet
+    IMG BG "./images/iss_new_planet.png"
+
+    TEXTBOX N "Some time passes. You look out the window and find you are approaching a new planet."
+    TEXTBOX N "The planet orbits a small red dwarf as its star. The cold light from the star barely illuminates the surface below."
+    TEXTBOX N "It reminds you of a candle illuminating a cold winter room, of a faint ember of hope still burning."
+    TEXTBOX N "It reminds you of all those nights you spent alone on Earth, before you volunteered to join the astronaut corps."
+    TEXTBOX N "You still miss her."
+    TEXTBOX N "And you miss Earth already."
+
+    # Close up shot of alien planet
+    IMG BG "./images/iss_landing.png"
+
+    TEXTBOX N "The surface of the planet appears to be covered with thick, dark forests. An ocean of trees."
+    TEXTBOX N "You can’t see any signs of civilization from here."
+    TEXTBOX N "The station’s speed towards the planet increases as it gets caught in the gravitational pull."
+    TEXTBOX N "You hold on tight and prepare for a rough landing."
+    TEXTBOX N "There’s no turning back now."
+
+    # Shot of crashed ship on alien planet
+    TEXTBOX N "When you wake up, you notice the station is in ruins around you."
+    TEXTBOX N "You feel the panic rising as you begin to overturn debris, searching for your crewmate."
+
+    # Non-Choice 1.01
+    SELECT _
+        "Valeria, where are you!" " "
+        "Help, is there anyone out there who can hear me!" " "
+
+    TEXTBOX N "You hear the sound of someone…no, something…approaching through the brush."
+
+    IMG CHAR "./images/slime1.png"
+
+    TEXTBOX SL "Hai!"
+
+    TEXTBOX N "A blob shaped alien creature bursts out from the bushes."
+    TEXTBOX N "It’s kinda cute though. Almost like some sort of…slime?"
+
+    TEXTBOX SL "Welcome new friend!"
+
+    # Non-Choice 1.02
+    SELECT _
+        "Nice to meet you!" " "
+        "What are you?" " "
+
+    TEXTBOX SL "We don’t get many visitors! Have you come to help save our planet?"
+
+    TEXTBOX N "Before you can ask what the slime means by that, another creature emerges from the surrounding forest."
+
+    IMG CHAR2 "./images/darkslime.png"
+
+    TEXTBOX DSL "RAAAAAAAHHHH"
+
+    TEXTBOX N "It’s another slime!"
+    TEXTBOX N "It almost reminds you of one of those deep sea creatures people would occasionally find washed up on the beach."
+
+    TEXTBOX SL "Help, it’s the dark slimes!"
+    TEXTBOX SL "They terrorize us at night! Ripping us to pieces with their sharp teeth!"
+    TEXTBOX SL "Destroying this world!!!"
+
+    TEXTBOX DSL "Fact check: that’s not true"
+    TEXTBOX DSL "This world is just as much ours as it is yours."
+    TEXTBOX DSL "We are the only ones who can save it."
+
+    ## ACTUAL CHOICE 2
+    # Results are "Slimes" for path 1, or "DarkSlimes" for path 2
+    SELECT Choice2
+        "Don’t worry, I’ll protect you!" "Slimes"
+        "Wait, what do you mean by that?" "DarkSlimes"
+
+    IF Choice2 "Slimes"
+        LOAD "./scripts/SCRIPT_03.SCR"
+
+    IF Choice2 "DarkSlimes"
+        LOAD "./scripts/SCRIPT_04.SCR"
+
+

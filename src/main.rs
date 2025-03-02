@@ -202,7 +202,10 @@ async fn main() {
             );
         }
 
+        // Draw selection menu
         if let Some(o) = &state.select_menu {
+            draw_rectangle(0., 0., WINDOW_WIDTH as f32 / scale, WINDOW_HEIGHT as f32 / scale, Color::from_rgba(0, 0, 0, 30));
+
             let mut vert = 0.0;
             for (i, option) in o.options.iter().enumerate() {
                 if o.selected == i {
