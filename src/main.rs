@@ -182,7 +182,7 @@ async fn main() {
 
         // Draw background
         if let Some(b) = state.background.as_mut() {
-            let mut fade = (b.1.elapsed().as_secs_f32() / 2.0).clamp(0.0, 1.0);
+            let mut fade = (b.1.elapsed().as_secs_f32() / 1.0).clamp(0.0, 1.0);
             if b.2 {
                 b.1 -= Duration::from_secs(10);
                 fade = 1.0;
