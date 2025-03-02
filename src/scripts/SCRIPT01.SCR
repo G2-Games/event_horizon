@@ -15,7 +15,7 @@ LABEL "start"
     # Text boxes are the basic method of displaying anything in a VN. Each time
     # a text box is shown, it types the text out on the screen and awaits user
     # input to advance.
-    TEXTBOX C1 "This is a test"
+    TEXTBOX C1 "The last resupply was over a year ago. We were told a larger ship would be sent later to return us to Earth."
     TEXTBOX C2 "This is another test"
     TEXTBOX C1 "Woahh"
 
@@ -28,18 +28,27 @@ LABEL "start"
 
     # IF expresssions are used to conditionally execute other expressions
     # (obviously!)
-    IF VarName = "opt1"
-        JUMP second
-    ELIF VarName = "opt2"
-        JUMP second
-    ELSE
-        NONE
+    IF VarName "opt1"
+        JUMP "second"
 
     # Yep
     TEXTBOX C1 "I'm gonna die"
 
+    JUMP "third"
+
 LABEL "second"
+    IMG BG "BG001.png"
+
     TEXTBOX C1 "Section 2 test"
     TEXTBOX C2 "Woahahhh pipe bomb"
     TEXTBOX C1 "So cool!"
     TEXTBOX C2 "I wonder what happens if I--"
+
+LABEL "third"
+    IMG BG "BG002.png"
+    TEXTBOX C1 "Section 3 test"
+    TEXTBOX C2 "Idk what to put here"
+    TEXTBOX C1 ":D"
+    TEXTBOX C2 "Also..."
+
+JUMPSCRIPT "SCRIPT02.SCR"

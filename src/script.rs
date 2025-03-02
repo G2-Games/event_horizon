@@ -3,6 +3,8 @@ use std::{collections::HashMap, fmt::Display, fs, iter::{Enumerate, Peekable}, p
 
 use macroquad::prelude::*;
 
+use crate::{load_image, NovelState, TextBox};
+
 const COMMENT: &str = "#";
 const DEFINE: &str = "DEFINE";
 const LABEL: &str = "LABEL";
@@ -10,6 +12,7 @@ const SELECT: &str = "SELECT";
 const IMAGE: &str = "IMG";
 const TEXTBOX: &str = "TEXTBOX";
 const JUMP: &str = "JUMP";
+const IF: &str = "IF";
 
 #[derive(Debug)]
 pub struct Script<P: AsRef<Path>> {
@@ -38,72 +41,101 @@ impl<P: AsRef<Path>> Script<P> {
         }
     }
 
-    pub fn next_instruction(&mut self) {
-        let line = self.lines[self.index].clone();
-        self.index += 1;
+    pub fn next_instruction(&mut self, state: &mut NovelState) {
+        loop {
+            let line = self.lines[self.index].clone();
+            self.index += 1;
 
-        let line = read_tokens(&line);
+            let line = read_tokens(&line);
 
-        if let Some(Token::Expression(c)) = line.tokens.get(0) {
-            // Skip comments
+            if let Some(Token::Expression(c)) = line.tokens.get(0) {
+                // Skip comments
 
-            if c.as_str().starts_with(COMMENT) {
-                return;
+                if c.as_str().starts_with(COMMENT) {
+                    continue;
+                }
+            } else {
+                // Line is blank, skip it
+                continue;
             }
-        } else {
-            // Line is blank, skip it
-            return;
-        }
 
-        clear_background(Color::from_hex(0x230000));
+            match line.tokens.first().unwrap().to_string().as_str() {
+                DEFINE => {
+                    debug!(
+                        "{}: {:>8} = {} (\"{}\")",
+                        DEFINE,
+                        line.tokens[1].to_string(),
+                        line.tokens[2],
+                        line.tokens[2].load_self_map(&self.variable_map).unwrap().to_string().as_str(),
+                    );
 
-        match line.tokens.first().unwrap().to_string().as_str() {
-            DEFINE => {
-                debug!(
-                    "{}: {:>8} = {} (\"{}\")",
-                       DEFINE,
-                       line.tokens[1].to_string(),
-                       line.tokens[2],
-                       line.tokens[2].load_self_map(&self.variable_map).unwrap().to_string().as_str(),
-                );
+                    self.variable_map.insert(
+                        line.tokens[1].to_string(),
+                        line.tokens[2].load_self_map(&self.variable_map).unwrap(),
+                    );
+                }
+                SELECT => {
+                    let new_var = line.tokens[1].to_string().clone();
+                    let mut options = HashMap::new();
+                    loop {
+                        let newline = read_tokens(&self.lines[self.index]);
+                        if newline.indent <= line.indent {
+                            break;
+                        }
 
-                self.variable_map.insert(
-                    line.tokens[1].to_string(),
-                    line.tokens[2].load_self_map(&self.variable_map).unwrap(),
-                );
-            }
-            SELECT => {
-                let mut options = HashMap::new();
-                loop {
-                    let newline = read_tokens(&self.lines[self.index + 1]);
-                    if newline.indent <= line.indent {
-                        break;
+                        options.insert(newline.tokens[0].to_string(), newline.tokens[1].to_string());
+
+                        self.index += 1;
                     }
 
-                    options.insert(newline.tokens[0].to_string(), newline.tokens[1].to_string());
+                    self.variable_map.insert(new_var, "BLOOP".to_string());
+                    debug!("{}: {:#?}", SELECT, options);
+                }
+                IF => {
+                    let condition_1 = line.tokens[1].load_self_map(&self.variable_map);
+                    let condition_2 = line.tokens[2].load_self_map(&self.variable_map);
 
-                    self.index += 1;
+                    if condition_2 != condition_1 {
+                        // Skip all the stuff inside the IF
+                        loop {
+                            let newline = read_tokens(&self.lines[self.index]);
+                            if newline.indent <= line.indent {
+                                break;
+                            }
+
+                            self.index += 1;
+                        }
+                    }
                 }
-                debug!("{}: {:#?}", SELECT, options);
-            }
-            IMAGE => {
-                let path = line.tokens[2].clone();
-                match line.tokens[1].to_string().as_str() {
-                    "BG" => debug!("IMG BG: {:>8}", path.to_string()),
-                    "CHAR" => debug!("IMG CHAR: {:>8}", path.to_string()),
-                    _ => panic!(),
+                IMAGE => {
+                    let path = line.tokens[2].clone();
+                    match line.tokens[1].to_string().as_str() {
+                        "BG" => {
+                            debug!("IMG BG: {:>8}", path.to_string());
+                            state.background = load_image(&path.to_string());
+                        },
+                        "CHAR" => debug!("IMG CHAR: {:>8}", path.to_string()),
+                        _ => panic!(),
+                    }
                 }
+                TEXTBOX => {
+                    let character_name = line.tokens[1].load_self_map(&self.variable_map).unwrap();
+                    debug!("TEXTBOX: {}, \"{}\"", character_name, line.tokens[2]);
+
+                    state.textbox = Some(TextBox {
+                        name: character_name,
+                        dialogue: line.tokens[2].to_string().clone().lines().map(|l| l.to_string()).collect(),
+                    });
+                    return
+                }
+                JUMP => {
+                    debug!("JUMP: {}", line.tokens[1]);
+                    let label_point = line.tokens[1].to_string();
+                    self.index = self.jump_map.get(&label_point).unwrap().0 - 1;
+                }
+                LABEL => (),
+                _ => (),
             }
-            TEXTBOX => {
-                let character_name = line.tokens[1].load_self_map(&self.variable_map).unwrap();
-                debug!("TEXTBOX: {}, \"{}\"", character_name, line.tokens[2]);
-            }
-            JUMP => {
-                let label_point = line.tokens[1].to_string();
-                self.index = self.jump_map.get(&label_point).unwrap().0 - 1;
-            }
-            LABEL => (),
-            _ => (),
         }
     }
 }
@@ -191,6 +223,8 @@ fn read_string(line: &mut Peekable<Chars>) -> Option<String> {
 
     let mut started = false;
     let mut escaped = None;
+    let mut space_index = 0;
+    let mut last_index = 0;
     for (index, c) in line.enumerate() {
         match c {
             '\n' => return None,
@@ -200,6 +234,15 @@ fn read_string(line: &mut Peekable<Chars>) -> Option<String> {
             '"' if started && escaped.is_none() => break,
             _ if started => final_string.push(c),
             _ => (),
+        }
+
+        if c == ' ' {
+            space_index = index
+        }
+
+        if index - last_index == 39 {
+            final_string.replace_range(space_index - 1..space_index, "\n");
+            last_index = index
         }
 
         if let Some(e) = escaped {
@@ -228,8 +271,4 @@ fn read_arguments(line: &mut Peekable<Chars>) -> String {
     }
 
     final_string
-}
-
-pub trait Runnable {
-    fn run(&self);
 }
